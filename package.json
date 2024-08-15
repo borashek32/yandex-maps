@@ -2,23 +2,33 @@
   "name": "maps",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "./node_modules/.bin/tsc",
+    "build": "webpack",
+    "start": "npx http-server ."
   },
   "dependencies": {
+    "@pbe/react-yandex-maps": "^1.2.5",
+    "http-server": "14.1.1",
+    "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.5"
+    "typescript": "5.2.2",
+    "ymap3-components": "^1.1.6"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@yandex/ymaps3-types": "^0.0.27",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5"
+    "eslint-config-next": "14.2.5",
+    "http-server": "14.1.1",
+    "typescript": "5.2.2",
+    "webpack": "5.88.2",
+    "webpack-cli": "5.1.4"
   }
 }
