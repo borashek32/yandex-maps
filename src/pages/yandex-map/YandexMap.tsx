@@ -1,46 +1,42 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { Map, Placemark } from "@pbe/react-yandex-maps";
+import { Map, Placemark, Circle } from "@pbe/react-yandex-maps";
 import synagogue from "@/pages/yandex-map/synagogue.svg";
 import { coordinates } from '@/pages/yandex-map/coordinates';
 
 export const YandexMap = () => {
-  const [zoom, setZoom] = useState(10);
+  const [zoom, setZoom] = useState(14);
   const [iconSideSize, setIconSideSize] = useState(30);
+  const [circleCenter, setCircleCenter] = useState<[number, number] | null>(null);
+  const [circleRadius, setCircleRadius] = useState<number | null>(null);
 
-  // 1 icon size
-  // get zoom when user changes it 
-  // and set it to variable "zoom"
+  // Изменение зума карты
   const onChangeZoom = (ref: ymaps.Map | null) => {
     ref?.events.add('boundschange', () => {
-      // @ts-expect-error: Property 'zoom' does not exist on type 'object'.ts(2339)
-      setZoom(ref.action.getCurrentState().zoom);
-    })
-  }
+      setZoom(ref.getZoom());
+    });
+  };
 
-  // 2 icon size
-  // count img size for icons for marks on map
-  // depends on map zoom
+  // Расчет размера иконки на основе зума
   const countIconSize = (zoom: number) => {
     const baseSize = 30;
     const zoomFactor = 1 + (zoom - 12) * 0.1;
     const maxSize = 60;
     const newIconSideSize = Math.min(baseSize * zoomFactor, maxSize);
     setIconSideSize(newIconSideSize);
-  }
+  };
 
   useEffect(() => {
-    countIconSize(zoom)
-  }, [zoom])
-
-
+    countIconSize(zoom);
+  }, [zoom]);
 
   
+
   return (
     <Map
-      instanceRef={ref => {
-        onChangeZoom(ref)
+      instanceRef={(ref) => {
+        onChangeZoom(ref);
       }}
       state={{
         center: [55.752004, 37.617734],
@@ -52,6 +48,17 @@ export const YandexMap = () => {
       height="100vh"
       modules={["control.ZoomControl"]}
     >
+        <Circle
+          geometry={[[55.749, 37.616], 1690]}
+          options={{
+            fillColor: "#db709377",
+            strokeColor: "#990066",
+            strokeOpacity: 0.8,
+            strokeWidth: 2,
+            draggable: true,
+          }}
+        />
+
       {coordinates.map((coord, index) => (
         <Placemark
           key={index}
@@ -64,7 +71,7 @@ export const YandexMap = () => {
             iconLayout: 'default#image',
             iconImageHref: synagogue.src,
             iconImageSize: [iconSideSize, iconSideSize],
-            iconImageOffset: [10, 10],
+            iconImageOffset: [0, 0],
           }}
         />
       ))}
